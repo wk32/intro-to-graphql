@@ -14,47 +14,24 @@ export const start = async () => {
   const rootSchema = `
     type Cat{
       name: String
-      breed: String
-      age: Int!
-      bestFriend: Cat! 
-    }
-    input CatInput{
-      name: String,
-      age: Int!
-      bestFriend: Cat!
     }
     type Query{
       myCat: Cat
-      hello: String
-      cats: [Cat]
-    }
-    type Mutation{
-      newCat(input: CatInput!): Cat!
     }
     schema {
       query: Query
+      mutation: Mutation
     }
   `
   const schemaTypes = await Promise.all(types.map(loadTypeSchema))
 
   const server = new ApolloServer({
-    typeDefs: [rootSchema],
+    typeDefs: [rootSchema, ...schemaTypes],
     // resolvers: merge({}, product, coupon, user),
     resolvers: {
       Query: {
         myCat() {
-          return {
-            name: 'Garfield',
-            breed: 'Ginger',
-            age: 1,
-            bestFriend: {
-              name: 'Oldie',
-              breed: 'Grey Cat'
-            }
-          }
-        },
-        hello() {
-          return 'world!'
+          return { name: 'Garfield' }
         }
       }
     },
