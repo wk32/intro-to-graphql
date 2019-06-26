@@ -1,6 +1,9 @@
 import { merge } from 'lodash'
 const env = process.env.NODE_ENV || 'development'
 
+/**
+ * centralized config file which generates config settings based on environment
+ */
 const baseConfig = {
   env,
   isDev: env === 'development',
