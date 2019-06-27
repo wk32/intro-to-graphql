@@ -50,8 +50,9 @@ export const start = async () => {
     // resolvers: merge({}, product, coupon, user),
     resolvers: {
       Query: {
-        cat(_, args) {
-          console.log('in cat query resolver')
+        cat(_, args, ctx, info) {
+          console.log('in cat query resolver', info)
+          throw new Error('error!!!')
           return {}
           // console.log('in cat resolvers')
           // return { name: args.name, age: 3, owner: {} }
@@ -77,8 +78,8 @@ export const start = async () => {
           return 'world!'
         }
       },
-      //resolver will evaluate types below as functions
-      //so if a query function previously refer to a particular type such as Cat, it will run the query below
+      // resolver will evaluate types below as functions
+      // so if a query function previously refer to a particular type such as Cat, it will run the query below
       Cat: {
         name() {
           console.log('in cat name')
