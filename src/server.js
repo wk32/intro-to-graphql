@@ -16,14 +16,21 @@ export const start = async () => {
       name: String
       breed: String
       age: Int!
-      bestFriend: Cat! 
+      bestFriend: Cat!
+      owner:Owner!
     }
     input CatInput{
       name: String,
       age: Int!
-      bestFriend: Cat!
+      bestFriend: CatInput!
+    }
+    type Owner {
+      name: String
+      cat: Cat
     }
     type Query{
+      cat(name:String!): Cat!
+      owner(name:String!): Owner!
       myCat: Cat
       hello: String
       cats: [Cat]
@@ -37,12 +44,24 @@ export const start = async () => {
     }
   `
   const schemaTypes = await Promise.all(types.map(loadTypeSchema))
-  /*
+
   const server = new ApolloServer({
     typeDefs: [rootSchema],
     // resolvers: merge({}, product, coupon, user),
     resolvers: {
       Query: {
+        cat(_, args) {
+          console.log('in cat query resolver')
+          return {}
+          // console.log('in cat resolvers')
+          // return { name: args.name, age: 3, owner: {} }
+        },
+        owner(_, args) {
+          console.log('in owner query resolver')
+          return {}
+          // console.log('in owner resolvers')
+          // return { name: args.name, cat: {} }
+        },
         myCat() {
           return {
             name: 'Garfield',
@@ -57,15 +76,41 @@ export const start = async () => {
         hello() {
           return 'world!'
         }
+      },
+      //resolver will evaluate types below as functions
+      //so if a query function previously refer to a particular type such as Cat, it will run the query below
+      Cat: {
+        name() {
+          console.log('in cat name')
+          return 'Daryl'
+        },
+        age() {
+          console.log('in cat age')
+          return 2
+        },
+        owner() {
+          console.log('in cat owner')
+          return {}
+        }
+      },
+      Owner: {
+        name() {
+          console.log('in owner name')
+          return 'Scott'
+        },
+        cat() {
+          console.log('in owner cat')
+          return {}
+        }
       }
     },
     async context({ req }) {
-      const user = await authenticate(req)
+      // const user = await authenticate(req)
       return { user }
     }
   })
-  */
 
+  /*
   const server = new ApolloServer({
     typeDefs: [rootSchema, ...schemaTypes],
     resolvers: merge({}, product, coupon, user),
@@ -74,8 +119,8 @@ export const start = async () => {
       return { user: null }
     }
   })
-
-  await connect(config.dbUrl)
+  */
+  // await connect(config.dbUrl)
   const { url } = await server.listen({ port: config.port })
 
   console.log(`GQL server ready at ${url}`)
