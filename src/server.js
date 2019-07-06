@@ -57,6 +57,11 @@ export const start = async () => {
   `
   const schemaTypes = await Promise.all(types.map(loadTypeSchema))
 
+  /**
+   *  authentication can be done outside graphQL
+   *
+   * */
+
   const server = new ApolloServer({
     typeDefs: [rootSchema],
     // resolvers: merge({}, product, coupon, user),
