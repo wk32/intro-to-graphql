@@ -28,7 +28,7 @@ beforeEach(async done => {
   if (mongoose.connection.readyState === 0) {
     try {
       await mongoose.connect(
-        config.dbUrl + db,
+        config.dbUrl,
         {
           useNewUrlParser: true,
           autoIndex: true
