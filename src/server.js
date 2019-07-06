@@ -12,6 +12,17 @@ const types = ['product', 'coupon', 'user']
 
 export const start = async () => {
   const rootSchema = `
+    interface Animal{
+      species: String
+    }
+    type Tiger implements Animal {
+      species: String!
+      stripeCount: Int
+    }
+    type Lion implements Animal {
+      species: String!
+      mainColor: String!
+    }
     type Cat{
       name: String
       breed: String
@@ -29,6 +40,7 @@ export const start = async () => {
       cat: Cat
     }
     type Query{
+      animals: [Animal]!
       cat(name:String!): Cat!
       owner(name:String!): Owner!
       myCat: Cat
@@ -50,9 +62,15 @@ export const start = async () => {
     // resolvers: merge({}, product, coupon, user),
     resolvers: {
       Query: {
+        animals() {
+          return [
+            { species: 'Tiger', stripeCount: 2 },
+            { species: 'Lion', mainColor: 'brown' }
+          ]
+        },
         cat(_, args, ctx, info) {
           console.log('in cat query resolver', info)
-          throw new Error('error!!!')
+          // throw new Error('error!!!')
           return {}
           // console.log('in cat resolvers')
           // return { name: args.name, age: 3, owner: {} }
@@ -82,7 +100,6 @@ export const start = async () => {
       // so if a query function previously refer to a particular type such as Cat, it will run the query below
       Cat: {
         name() {
-          console.log('in cat name')
           return 'Daryl'
         },
         age() {
@@ -102,6 +119,11 @@ export const start = async () => {
         cat() {
           console.log('in owner cat')
           return {}
+        }
+      },
+      Animal: {
+        __resolveType(animal) {
+          return animal.species
         }
       }
     },
