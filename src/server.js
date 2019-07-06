@@ -151,4 +151,19 @@ export const start = async () => {
 
 /**
  * WK: apollo server creates a graph ql server for us
+ * 
+ *  at client need to create inline 'on' fragments
+ *  to return fields specific to each type
+ * 
+ * {
+  animals{
+  	species
+    ... on Lion {
+      mainColor
+    }
+    ... on Tiger{
+      stripeCount
+    }
+  }
+}
  */
